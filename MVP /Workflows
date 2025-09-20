@@ -1,10 +1,10 @@
-Frontend (React/Next.js or Streamlit)
+## Frontend (React/Next.js or Streamlit)
 
 User uploads satellite image or selects from sample dataset.
 
 Sends request to API Gateway.
 
-API Gateway → Lambda (Agent Logic)
+## API Gateway → Lambda (Agent Logic)
 
 Lambda fetches image from S3.
 
