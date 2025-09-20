@@ -1,0 +1,23 @@
+{
+  "name": "ecoagent-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.1.0",
+    "react": "18.3.0",
+    "react-dom": "18.3.0",
+    "axios": "^1.5.0",        // for API calls
+    "mapbox-gl": "^2.19.0"    // for map pins
+  },
+  "devDependencies": {
+    "autoprefixer": "^11.8.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.5.0"
+  }
+}
