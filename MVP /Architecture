@@ -1,0 +1,27 @@
+ User (Frontend)
+      │
+      ▼
+ ┌──────────────┐       ┌───────────────┐
+ │ React/Next.js│◀────▶│ API Gateway    │
+ │ (or Streamlit)│      │ (REST Endpoint)│
+ └──────────────┘       └───────────────┘
+                            │
+                            ▼
+                   ┌───────────────────┐
+                   │ AWS Lambda (Agent)│
+                   └───────────────────┘
+                      │       │       │
+      ┌───────────────┘       │       └───────────────┐
+      ▼                       ▼                       ▼
+┌───────────────┐    ┌───────────────────┐    ┌───────────────────┐
+│ Amazon S3     │    │ Amazon Bedrock    │    │ DynamoDB (Memory) │
+│ (Images, Maps │    │ (Reasoning, Report│    │ (Past Findings)   │
+│ Reports)      │    │  Generation)      │    │                   │
+└───────────────┘    └───────────────────┘    └───────────────────┘
+
+                            │
+                            ▼
+                   ┌───────────────────────┐
+                   │ AWS QuickSight / Map  │
+                   │ (Visualization Layer) │
+                   └───────────────────────┘
