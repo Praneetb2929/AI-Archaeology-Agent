@@ -1,7 +1,10 @@
 "use client";
 import { useState } from "react";
-import MapView from "../components/MapView";     // ✅ use MapView.js
-import ReportCard from "../components/ReportCard"; // ✅ use ReportCard.js
+import dynamic from "next/dynamic";
+import ReportCard from "../components/ReportCard";
+
+// Dynamically load MapView to prevent SSR issues
+const MapView = dynamic(() => import("../components/MapView"), { ssr: false });
 
 export default function HomePage() {
   const [image, setImage] = useState(null);
@@ -13,7 +16,7 @@ export default function HomePage() {
 
     setImage(URL.createObjectURL(file));
 
-    // Dummy anomaly reports (replace later with API call)
+    // Dummy anomaly reports
     setReports([
       {
         id: 1,
@@ -56,11 +59,13 @@ export default function HomePage() {
 
       {/* Map */}
       <h2 className="text-lg font-semibold mb-2">Anomaly Map:</h2>
-      <MapView markers={reports.map((r) => ({
-        id: r.id,
-        position: r.coordinates,
-        text: r.title,
-      }))} />
+      <MapView
+        markers={reports.map((r) => ({
+          id: r.id,
+          position: r.coordinates,
+          text: r.title,
+        }))}
+      />
 
       {/* Reports */}
       <div className="mt-6 space-y-4">
