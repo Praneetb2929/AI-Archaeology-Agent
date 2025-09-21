@@ -1,21 +1,40 @@
 "use client";
 import { useState } from "react";
-import dynamic from "next/dynamic";
-
-// Dynamically import Leaflet map (to avoid SSR issues)
-const Map = dynamic(() => import("../components/Map"), { ssr: false });
+import MapView from "../components/MapView";     // ✅ use MapView.js
+import ReportCard from "../components/ReportCard"; // ✅ use ReportCard.js
 
 export default function HomePage() {
   const [image, setImage] = useState(null);
+  const [reports, setReports] = useState([]);
 
   const handleUpload = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImage(URL.createObjectURL(file));
+
+    // Dummy anomaly reports (replace later with API call)
+    setReports([
+      {
+        id: 1,
+        title: "Possible Ruins",
+        description: "Detected unusual rectangular patterns.",
+        coordinates: [20.2961, 85.8245],
+      },
+      {
+        id: 2,
+        title: "Soil Disturbance",
+        description: "Detected vegetation density change.",
+        coordinates: [19.076, 72.8777],
+      },
+    ]);
   };
 
   return (
     <main className="min-h-screen p-6 bg-gray-50">
-      <h1 className="text-2xl font-bold mb-4">AI Archaeology Agent</h1>
+      <h1 className="text-2xl font-bold mb-6">AI Archaeology Agent</h1>
 
+      {/* Image Upload */}
       <input
         type="file"
         accept="image/*"
@@ -23,6 +42,7 @@ export default function HomePage() {
         className="mb-4"
       />
 
+      {/* Show uploaded image */}
       {image && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Uploaded Image:</h2>
@@ -34,8 +54,24 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Map */}
       <h2 className="text-lg font-semibold mb-2">Anomaly Map:</h2>
-      <Map />
+      <MapView markers={reports.map((r) => ({
+        id: r.id,
+        position: r.coordinates,
+        text: r.title,
+      }))} />
+
+      {/* Reports */}
+      <div className="mt-6 space-y-4">
+        {reports.map((r) => (
+          <ReportCard
+            key={r.id}
+            title={r.title}
+            description={r.description}
+          />
+        ))}
+      </div>
     </main>
   );
 }
