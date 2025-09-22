@@ -1,11 +1,12 @@
 "use client";
-export const dynamic = "force-dynamic"; // disables static pre-rendering
+export const dynamic = "force-dynamic"; // prevents prerendering
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
+import loadable from "next/dynamic";   // 👈 renamed to loadable
 import ReportCard from "../components/ReportCard";
 
-const MapView = dynamic(() => import("../components/MapView"), { ssr: false });
+// Use the renamed one
+const MapView = loadable(() => import("../components/MapView"), { ssr: false });
 
 export default function HomePage() {
   const [image, setImage] = useState(null);
