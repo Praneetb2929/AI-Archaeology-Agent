@@ -1,9 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic"; // disables static pre-rendering
+
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import ReportCard from "../components/ReportCard";
 
-// Dynamically load MapView to prevent SSR issues
 const MapView = dynamic(() => import("../components/MapView"), { ssr: false });
 
 export default function HomePage() {
@@ -12,12 +13,11 @@ export default function HomePage() {
 
   const handleUpload = (e) => {
     try {
-      const file = e.target.files[0];
+      const file = e.target.files?.[0];
       if (!file) return;
 
       setImage(URL.createObjectURL(file));
 
-      // Dummy anomaly reports
       setReports([
         {
           id: 1,
@@ -34,7 +34,7 @@ export default function HomePage() {
       ]);
     } catch (err) {
       console.error("Error during upload:", err);
-      setReports([]); // fallback to safe empty array
+      setReports([]);
     }
   };
 
@@ -42,7 +42,6 @@ export default function HomePage() {
     <main className="min-h-screen p-6 bg-gray-50">
       <h1 className="text-2xl font-bold mb-6">AI Archaeology Agent</h1>
 
-      {/* Image Upload */}
       <input
         type="file"
         accept="image/*"
@@ -50,7 +49,6 @@ export default function HomePage() {
         className="mb-4"
       />
 
-      {/* Show uploaded image */}
       {image && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Uploaded Image:</h2>
@@ -62,19 +60,17 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Map */}
       <h2 className="text-lg font-semibold mb-2">Anomaly Map:</h2>
       <MapView
-        markers={(reports || []).map((r) => ({
+        markers={(reports ?? []).map((r) => ({
           id: r.id,
           position: r.coordinates,
           text: r.title,
         }))}
       />
 
-      {/* Reports */}
       <div className="mt-6 space-y-4">
-        {(reports || []).map((r) => (
+        {(reports ?? []).map((r) => (
           <ReportCard
             key={r.id}
             title={r.title}
