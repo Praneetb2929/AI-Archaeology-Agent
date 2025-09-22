@@ -11,26 +11,31 @@ export default function HomePage() {
   const [reports, setReports] = useState([]);
 
   const handleUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    try {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    setImage(URL.createObjectURL(file));
+      setImage(URL.createObjectURL(file));
 
-    // Dummy anomaly reports
-    setReports([
-      {
-        id: 1,
-        title: "Possible Ruins",
-        description: "Detected unusual rectangular patterns.",
-        coordinates: [20.2961, 85.8245],
-      },
-      {
-        id: 2,
-        title: "Soil Disturbance",
-        description: "Detected vegetation density change.",
-        coordinates: [19.076, 72.8777],
-      },
-    ]);
+      // Dummy anomaly reports
+      setReports([
+        {
+          id: 1,
+          title: "Possible Ruins",
+          description: "Detected unusual rectangular patterns.",
+          coordinates: [20.2961, 85.8245],
+        },
+        {
+          id: 2,
+          title: "Soil Disturbance",
+          description: "Detected vegetation density change.",
+          coordinates: [19.076, 72.8777],
+        },
+      ]);
+    } catch (err) {
+      console.error("Error during upload:", err);
+      setReports([]); // fallback to safe empty array
+    }
   };
 
   return (
@@ -60,7 +65,7 @@ export default function HomePage() {
       {/* Map */}
       <h2 className="text-lg font-semibold mb-2">Anomaly Map:</h2>
       <MapView
-        markers={reports.map((r) => ({
+        markers={(reports || []).map((r) => ({
           id: r.id,
           position: r.coordinates,
           text: r.title,
@@ -69,7 +74,7 @@ export default function HomePage() {
 
       {/* Reports */}
       <div className="mt-6 space-y-4">
-        {reports.map((r) => (
+        {(reports || []).map((r) => (
           <ReportCard
             key={r.id}
             title={r.title}
