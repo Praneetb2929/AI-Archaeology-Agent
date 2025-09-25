@@ -2,15 +2,15 @@
 export const dynamic = "force-dynamic"; // prevents prerendering
 
 import { useState } from "react";
-import loadable from "next/dynamic";   // 👈 renamed to loadable
+import loadable from "next/dynamic"; // 👈 renamed to loadable
 import ReportCard from "../components/ReportCard";
 
-// Use the renamed one
+// Dynamically load MapView (client-side only)
 const MapView = loadable(() => import("../components/MapView"), { ssr: false });
 
 export default function HomePage() {
   const [image, setImage] = useState(null);
-  const [reports, setReports] = useState([]);
+  const [reports, setReports] = useState([]); // ✅ always an array
 
   const handleUpload = (e) => {
     try {
@@ -19,6 +19,7 @@ export default function HomePage() {
 
       setImage(URL.createObjectURL(file));
 
+      // Dummy anomaly reports
       setReports([
         {
           id: 1,
@@ -35,7 +36,7 @@ export default function HomePage() {
       ]);
     } catch (err) {
       console.error("Error during upload:", err);
-      setReports([]);
+      setReports([]); // fallback so .map() never breaks
     }
   };
 
@@ -43,6 +44,7 @@ export default function HomePage() {
     <main className="min-h-screen p-6 bg-gray-50">
       <h1 className="text-2xl font-bold mb-6">AI Archaeology Agent</h1>
 
+      {/* Image Upload */}
       <input
         type="file"
         accept="image/*"
@@ -50,6 +52,7 @@ export default function HomePage() {
         className="mb-4"
       />
 
+      {/* Show uploaded image */}
       {image && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold">Uploaded Image:</h2>
@@ -61,21 +64,23 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Map */}
       <h2 className="text-lg font-semibold mb-2">Anomaly Map:</h2>
       <MapView
-        markers={(reports ?? []).map((r) => ({
+        markers={(reports || []).map((r) => ({
           id: r.id,
-          position: r.coordinates,
-          text: r.title,
+          position: r.coordinates || [0, 0], // ✅ safe fallback
+          text: r.title || "Unknown",
         }))}
       />
 
+      {/* Reports */}
       <div className="mt-6 space-y-4">
-        {(reports ?? []).map((r) => (
+        {(reports || []).map((r) => (
           <ReportCard
             key={r.id}
-            title={r.title}
-            description={r.description}
+            title={r.title || "Untitled"}
+            description={r.description || "No description available"}
           />
         ))}
       </div>
